@@ -1,5 +1,7 @@
 const size = 300
-var dmak = new Dmak('酒', {
+let params = new URLSearchParams(document.location.search.substring(1));
+let query = params.get("kanji")||'酒';
+var dmak = new Dmak(query, {
     'element' : "draw",
     uri:'https://rawgit.com/KanjiVG/kanjivg/master/kanji/',
     loaded:function(o){
