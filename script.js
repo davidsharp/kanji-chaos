@@ -1,25 +1,32 @@
 const size = 300
-//var synth = new Tone.Synth().toMaster();
-let sp=[];
 var dmak = new Dmak('酒', {
     'element' : "draw",
     uri:'https://rawgit.com/KanjiVG/kanjivg/master/kanji/',
-    loaded:function(o){console.log('loaded'/*,o*/)
-                       let strokes = dmak.strokes.map(({path})=>(pointAtLength(path)))
-                       console.log(strokes)
-                       let strokePoints = strokes.map(
-                         c=>{
-                           var len = c.length();
-                           var a = [];
-                           for (var i = 0; i <= 10; i++) {
-                             let p = c.at(i / 10 * len)
-                             a.push(p);
-                           }
-                           return a
-                         }
-                       )
-                       sp=strokePoints
-                      },
+    loaded:function(o){
+      console.log('loaded'/*,o*/)
+      let strokes = dmak.strokes.map(({path})=>(pointAtLength(path)))
+      console.log(strokes)
+      let strokePoints = strokes.map(
+        c=>{
+          var len = c.length();
+          var a = [];
+          for (var i = 0; i <= 10; i++) {
+            let p = c.at(i / 10 * len)
+            a.push(p);
+          }
+          return a
+        }
+      )
+      let sp = strokePoints.reduce((a,b)=>([...a,...b]),[])
+        sp.forEach(function(c,i){
+        setTimeout(function(){
+          setFreq(c[1],109)
+        }, i * 100);    
+      });
+      setTimeout(function(){
+        setFreq(0)
+      }, sp.length * 100)
+    },
     drew:function(o){
       console.log('drawn',o);
       var pts = pointAtLength(dmak.strokes[o].path)
@@ -29,19 +36,7 @@ var dmak = new Dmak('酒', {
       //console.log('len',len)
       
       //setFreq(pts.at(0)[0],109)
-      
-      if(/*o>=dmak.strokes.length-1*/o==0){
-        console.log(sp)
-        let nsp = sp.reduce((a,b)=>([...a,...b]),[])
-          nsp.forEach(function(c,i){
-          setTimeout(function(){
-            setFreq(c[0],109)
-          }, i * 100);    
-          });
-        setTimeout(function(){
-            setFreq(0)
-          }, nsp.length * 100)
-      }
+        
     },
     height:size,width:size
   });
