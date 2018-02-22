@@ -20,6 +20,7 @@ var dmak = new Dmak('酒', {
       let sp = strokePoints.reduce((a,b)=>([...a,...b]),[])
         sp.forEach(function(c,i){
         setTimeout(function(){
+          setPan(c[0],109)
           setFreq(c[1],109)
         }, i * 100);    
       });
@@ -56,17 +57,25 @@ var con = new audio_context(); // Create an audio engine
 var osc = con.createOscillator(); //Creating an Oscilattor
 var filter = con.createBiquadFilter(); //Creating a filter
 var gainNode = con.createGain()
+var panner = con.createStereoPanner();
 gainNode.gain.value = 0.1 // 10 %
-gainNode.connect(con.destination)
+//gainNode.connect(con.destination)
 filter.frequency.value = 200;
 osc.frequency.value = 0; 
 osc.start(); //starts the oscillator
 osc.type = "square"; //Sets the wave type
 osc.connect(filter); //Connects the oscillator to the computer sound system
-filter.connect(gainNode);
+filter.connect(panner);
+panner.connect(gainNode)
 gainNode.connect(con.destination)
+
+
 function setFreq(x,outOf){
   osc.frequency.value = outOf ? ((x/outOf)*(hi-lo))+lo : x
+}
+function setPan(x,outOf){
+  //panner.orientationX.value=(x/outOf)
+  panner.pan.value = (x/outOf)
 }
 function setFilter(x,outOf){
   //filter.frequency.value = ((x/outOf)*(300-100))+100
